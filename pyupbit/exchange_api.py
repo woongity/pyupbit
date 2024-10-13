@@ -292,13 +292,12 @@ class Upbit:
             # - r"^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
             is_uuid = len(p.findall(ticker_or_uuid)) > 0
             if is_uuid:
-                url = "https://api.upbit.com/v1/order"
+                url = "https://api.upbit.com/v1/orders/uuids"
                 data = {'uuid': ticker_or_uuid}
                 headers = self._request_headers(data)
                 result = _send_get_request(url, headers=headers, data=data)
-            else :
-
-                url = "https://api.upbit.com/v1/orders"
+            else:
+                url = "https://api.upbit.com/v1/orders/closed" if state in ['cancel', 'done'] else "https://api.upbit.com/v1/orders/open"
                 data = {'market': ticker_or_uuid,
                         'state': state,
                         'page': page,
@@ -326,7 +325,7 @@ class Upbit:
         """
         # TODO : states, uuids, identifiers 관련 기능 추가 필요
         try:
-            url = "https://api.upbit.com/v1/order"
+            url = "https://api.upbit.com/v1/order/uuids"
             data = {'uuid': uuid}
             headers = self._request_headers(data)
             result = _send_get_request(url, headers=headers, data=data)
